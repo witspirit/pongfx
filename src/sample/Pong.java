@@ -36,6 +36,9 @@ public class Pong extends Application {
         Player player2 = Player.right(screenBounds);
         canvas.getChildren().add(player2.getNode());
 
+        Ball ball = Ball.create(screenBounds);
+        canvas.getChildren().add(ball.getNode());
+
         // It turns out this is not really the bottom of the screen... Don't known why...
 //        Line bottomLine = new Line(0, screenBounds.getHeight(), screenBounds.getWidth(), screenBounds.getHeight());
 //        bottomLine.setStroke(Paint.valueOf("RED"));
@@ -65,6 +68,15 @@ public class Pong extends Application {
                 case K :
                     // System.out.println("K pressed... Moving P2 Down");
                     player2.down();
+                    break;
+                case R :
+                    ball.reset();
+                    break;
+                case L:
+                    ball.launch();
+                    break;
+                case F :
+                    ball.freeze();
                     break;
             }
 
