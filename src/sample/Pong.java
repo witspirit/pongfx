@@ -15,10 +15,6 @@ import java.awt.*;
 
 public class Pong extends Application {
 
-    public static final int PLAYER_WIDTH = 50;
-    public static final int PLAYER_HEIGHT = 200;
-    public static final Paint PLAYER_COLOR = Paint.valueOf("WHITE");
-    public static final int PLAYER_SCREEN_OFFSET = 100;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -28,7 +24,7 @@ public class Pong extends Application {
         canvas.setStyle("-fx-background-color: black;");
 
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        System.out.println("Screen Height/Width: "+screenBounds.getHeight()+"/"+screenBounds.getWidth());
+        System.out.println("Screen Width/Height: "+screenBounds.getWidth()+"/"+screenBounds.getHeight());
 
         Player player1 = Player.left(screenBounds);
         canvas.getChildren().add(player1.getNode());
@@ -82,6 +78,24 @@ public class Pong extends Application {
 
         });
 
+        mainScene.setOnKeyReleased(ke -> {
+            switch (ke.getCode()) {
+                case W :
+                case S :
+                    player1.stop();
+                    break;
+                case I :
+                case K :
+                    player2.stop();
+                    break;
+            }
+        });
+
+        AnimationLoop animation = new AnimationLoop();
+        animation.register(ball);
+        animation.register(player1);
+        animation.register(player2);
+        animation.start();
 
         primaryStage.show();
 

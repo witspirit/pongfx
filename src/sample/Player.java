@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.geometry.Rectangle2D;
-import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
@@ -10,12 +9,14 @@ import java.util.function.Function;
 /**
  * Represents a Player
  */
-public class Player {
-    public static final int PLAYER_WIDTH = 50;
-    public static final int PLAYER_HEIGHT = 200;
-    public static final Paint PLAYER_COLOR = Paint.valueOf("WHITE");
-    public static final double PLAYER_SCREEN_OFFSET = 100;
-    public static final int MOVE_STEP = 20;
+public class Player implements Renderer {
+    private static final int PLAYER_WIDTH = 50;
+    private static final int PLAYER_HEIGHT = 200;
+    private static final Paint PLAYER_COLOR = Paint.valueOf("WHITE");
+    private static final double PLAYER_SCREEN_OFFSET = 100;
+
+    private static final int SPEED = 20; // Pixels / Second
+
 
     public enum Position {
         LEFT(bounds -> PLAYER_SCREEN_OFFSET),
@@ -35,6 +36,8 @@ public class Player {
     private Rectangle node;
     private Rectangle2D bounds;
 
+    private double velocity = 0.0;
+
 
     private Player(Position position, Rectangle2D bounds) {
         node = new Rectangle(PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_COLOR);
@@ -53,21 +56,26 @@ public class Player {
     }
 
     public void up() {
-        if (node.getY() <= 0) {
-            node.setY(0);
-        } else {
-            node.setY(node.getY()- MOVE_STEP);
-        }
-
+        velocity = -SPEED;
     }
 
     public void down() {
-        if (node.getY()+PLAYER_HEIGHT >= bounds.getHeight() ) {
-            node.setY(bounds.getHeight()-PLAYER_HEIGHT);
-        } else {
-            node.setY(node.getY() + MOVE_STEP);
-        }
+        velocity = +SPEED;
+    }
 
+    public void stop() {
+        velocity = 0.0;
+    }
+
+    @Override
+    public void update(double elapsedSeconds) {
+        double y = node.getY() + velocity;
+        node.setY(y);
+        if (y <= 0) {
+            node.setY(0);
+        } else if (y+PLAYER_HEIGHT >= bounds.getHeight()) {
+            node.setY(bounds.getHeight()-PLAYER_HEIGHT);
+        }
     }
 
     public Rectangle getNode() {

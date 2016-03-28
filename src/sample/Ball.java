@@ -10,14 +10,12 @@ import java.util.Random;
 /**
  * Representation of the Pong Ball
  */
-public class Ball {
+public class Ball implements Renderer {
 
     private static final double SPEED = 200.0; // Pixels / Second
 
     private Circle node;
     private Rectangle2D bounds;
-    private AnimationTimer timer;
-    private long lastUpdate = System.nanoTime();
     private double direction = 0.0;
     private double velocity = 0.0; // Pixels / Second
     private Random random;
@@ -27,37 +25,6 @@ public class Ball {
         this.bounds = bounds;
 
         random = new Random();
-
-        timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                double elapsedSeconds = (now - lastUpdate) / 1000000000.0;
-                move(elapsedSeconds);
-                lastUpdate = now;
-            }
-        };
-        timer.start();
-
-
-    }
-
-    private void move(double elapsedSeconds) {
-        double newX = node.getCenterX() + Math.cos(direction) * (velocity * elapsedSeconds);
-        double newY = node.getCenterY() + Math.sin(direction) * (velocity * elapsedSeconds);
-
-        if (newX <= 0.0) {
-            // Bounce left
-        } else if (newX >= bounds.getWidth()) {
-            // Bounce right
-        } else if (newY <= 0.0) {
-            // Bounce top
-        } else if (newY >= bounds.getHeight()) {
-            // Bounce bottom
-        }
-
-
-        node.setCenterX(newX);
-        node.setCenterY(newY);
     }
 
     public static Ball create(Rectangle2D bounds) {
@@ -81,5 +48,25 @@ public class Ball {
     public void reset() {
         node.setCenterX(bounds.getWidth()/2);
         node.setCenterY(bounds.getHeight()/2);
+    }
+
+    @Override
+    public void update(double elapsedSeconds) {
+        double newX = node.getCenterX() + Math.cos(direction) * (velocity * elapsedSeconds);
+        double newY = node.getCenterY() + Math.sin(direction) * (velocity * elapsedSeconds);
+
+        if (newX <= 0.0) {
+            // Bounce left
+        } else if (newX >= bounds.getWidth()) {
+            // Bounce right
+        } else if (newY <= 0.0) {
+            // Bounce top
+        } else if (newY >= bounds.getHeight()) {
+            // Bounce bottom
+        }
+
+
+        node.setCenterX(newX);
+        node.setCenterY(newY);
     }
 }
