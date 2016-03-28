@@ -40,14 +40,23 @@ public class Pong extends Application {
         Ball ball = Ball.create(screenBounds);
         canvas.getChildren().add(ball.getNode());
 
-        Label directionLabel = new Label();
-        directionLabel.setStyle("-fx-background-color: white");
-        canvas.getChildren().add(directionLabel);
-        ball.directionProperty().addListener(new ChangeListener<Number>() {
+        Label speedLabel = new Label();
+        speedLabel.setStyle("-fx-background-color: white");
+        // canvas.getChildren().add(speedLabel); // Let's not show it for now
+
+        // Feels a bit ridiculous... Can't I combine the two change listeners ?
+        ball.xVelocityProperty().addListener(new ChangeListener<Number>() {
 
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                directionLabel.textProperty().setValue(newValue.toString());
+                speedLabel.textProperty().setValue(newValue + "/" + ball.getyVelocity());
+            }
+        });
+        ball.yVelocityProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                speedLabel.textProperty().setValue(ball.getxVelocity() + "/" + newValue);
             }
         });
 
