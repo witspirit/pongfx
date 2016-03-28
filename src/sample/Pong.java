@@ -80,14 +80,10 @@ public class Pong extends Application {
 
         mainScene.setOnKeyReleased(ke -> {
             switch (ke.getCode()) {
-                case W :
-                case S :
-                    player1.stop();
-                    break;
-                case I :
-                case K :
-                    player2.stop();
-                    break;
+                case W : player1.stopUp(); break;
+                case S : player1.stopDown(); break;
+                case I : player2.stopUp(); break;
+                case K : player2.stopDown(); break;
             }
         });
 

@@ -63,8 +63,16 @@ public class Player implements Renderer {
         velocity = +SPEED;
     }
 
-    public void stop() {
-        velocity = 0.0;
+    public void stopUp() {
+        if (velocity <= -SPEED) { // Only when still going up we will stop
+            velocity = 0.0;
+        }
+    }
+
+    public void stopDown() {
+        if (velocity >= +SPEED) { // Only when still going down we will stop
+            velocity = 0.0;
+        }
     }
 
     @Override
