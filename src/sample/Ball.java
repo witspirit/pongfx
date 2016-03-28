@@ -14,7 +14,7 @@ import java.util.Random;
  */
 public class Ball implements Renderer {
 
-    private static final double SPEED = 400.0; // Pixels / Second
+    private static final double SPEED = 600.0; // Pixels / Second
     private static final int RADIUS = 25;
 
     private Circle node;
@@ -64,24 +64,24 @@ public class Ball implements Renderer {
         double newX = node.getCenterX() + (vX * elapsedSeconds);
         double newY = node.getCenterY() + (vY * elapsedSeconds);
 
-        if (newX-RADIUS <= 0.0) {
+        if (newX-RADIUS <= bounds.getMinX()) {
             // Bounce left
             System.out.println("Left hit detected");
 
             xVelocity.set(-vX);
 
-        } else if (newX+RADIUS >= bounds.getWidth()) {
+        } else if (newX+RADIUS >= bounds.getMaxX()) {
             // Bounce right
             System.out.println("Right hit detected");
 
             xVelocity.set(-vX);
-        } else if (newY-RADIUS <= 0.0) {
+        } else if (newY-RADIUS <= bounds.getMinY()) {
             // Bounce top
             System.out.println("Top hit detected");
 
             yVelocity.set(-vY);
 
-        } else if (newY+RADIUS >= bounds.getHeight()) {
+        } else if (newY+RADIUS >= bounds.getMaxY()) {
             // Bounce bottom
             System.out.println("Bottom hit detected");
 
