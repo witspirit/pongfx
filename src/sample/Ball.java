@@ -1,6 +1,8 @@
 package sample;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -16,7 +18,7 @@ public class Ball implements Renderer {
 
     private Circle node;
     private Rectangle2D bounds;
-    private double direction = 0.0;
+    private DoubleProperty direction = new SimpleDoubleProperty(0.0);
     private double velocity = 0.0; // Pixels / Second
     private Random random;
 
@@ -36,12 +38,12 @@ public class Ball implements Renderer {
     }
 
     public void launch() {
-        direction = random.nextDouble() * (Math.PI*2);
+        direction.set(random.nextDouble() * (Math.PI * 2));
         velocity = SPEED;
     }
 
     public void freeze() {
-        direction = 0.0;
+        direction.set(0.0);
         velocity = 0.0;
     }
 
@@ -52,21 +54,33 @@ public class Ball implements Renderer {
 
     @Override
     public void update(double elapsedSeconds) {
-        double newX = node.getCenterX() + Math.cos(direction) * (velocity * elapsedSeconds);
-        double newY = node.getCenterY() + Math.sin(direction) * (velocity * elapsedSeconds);
+        double newX = node.getCenterX() + Math.cos(direction.doubleValue()) * (velocity * elapsedSeconds);
+        double newY = node.getCenterY() + Math.sin(direction.doubleValue()) * (velocity * elapsedSeconds);
 
         if (newX <= 0.0) {
             // Bounce left
+            System.out.println("Left hit detected: "+direction);
         } else if (newX >= bounds.getWidth()) {
             // Bounce right
+            System.out.println("Right hit detected: "+direction);
         } else if (newY <= 0.0) {
             // Bounce top
+            System.out.println("Top hit detected: "+direction);
         } else if (newY >= bounds.getHeight()) {
             // Bounce bottom
+            System.out.println("Bottom hit detected: "+direction);
         }
 
 
         node.setCenterX(newX);
         node.setCenterY(newY);
+    }
+
+    public double getDirection() {
+        return direction.get();
+    }
+
+    public DoubleProperty directionProperty() {
+        return direction;
     }
 }

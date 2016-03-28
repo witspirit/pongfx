@@ -1,8 +1,13 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
@@ -34,6 +39,18 @@ public class Pong extends Application {
 
         Ball ball = Ball.create(screenBounds);
         canvas.getChildren().add(ball.getNode());
+
+        Label directionLabel = new Label();
+        directionLabel.setStyle("-fx-background-color: white");
+        canvas.getChildren().add(directionLabel);
+        ball.directionProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                directionLabel.textProperty().setValue(newValue.toString());
+            }
+        });
+
 
         // It turns out this is not really the bottom of the screen... Don't known why...
 //        Line bottomLine = new Line(0, screenBounds.getHeight(), screenBounds.getWidth(), screenBounds.getHeight());
