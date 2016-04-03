@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
@@ -22,6 +24,8 @@ public class Player implements Renderer {
     private Rectangle node;
 
     private double velocity = 0.0;
+
+    private IntegerProperty score = new SimpleIntegerProperty(0);
 
     public Player(Point2D startPosition) {
         this.startPosition = startPosition;
@@ -81,5 +85,9 @@ public class Player implements Renderer {
 
     public Rectangle getNode() {
         return node;
+    }
+
+    public IntegerProperty scoreProperty() {
+        return score;
     }
 }

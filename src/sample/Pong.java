@@ -1,13 +1,16 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -27,8 +30,12 @@ public class Pong extends Application {
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Pong");
+
+        StackPane overallPane = new StackPane();
+
         Pane canvas = new Pane();
         canvas.setStyle("-fx-background-color: black;");
+        overallPane.getChildren().add(canvas);
 
         screenBounds = Screen.getPrimary().getVisualBounds();
         System.out.println("Screen Width/Height: "+ screenBounds.getWidth()+"/"+ screenBounds.getHeight());
@@ -42,6 +49,10 @@ public class Pong extends Application {
 
         player2 = new Player(new Point2D(screenBounds.getMaxX() - PLAYER_SCREEN_OFFSET, screenBounds.getHeight() / 2));
         canvas.getChildren().add(player2.getNode());
+
+        HBox controlLayout = new HBox();
+        controlLayout.setPrefSize(screenBounds.getWidth(), 100);
+        overallPane.getChildren().add(controlLayout);
 
 
         Label speedLabel = new Label();
@@ -64,6 +75,17 @@ public class Pong extends Application {
             }
         });
 
+        Label player1Score = new Label();
+        // player1Score.setStyle("-fx-background-color: white");
+        player1Score.textProperty().bind(Bindings.convert(player1.scoreProperty()));
+        controlLayout.getChildren().add(player1Score);
+
+        Label player2Score = new Label();
+        // player2Score.setStyle("-fx-background-color: white");
+        player2Score.textProperty().bind(Bindings.convert(player2.scoreProperty()));
+        controlLayout.getChildren().add(player2Score);
+
+
         Random random = new Random();
 
 
@@ -72,7 +94,7 @@ public class Pong extends Application {
 //        bottomLine.setStroke(Paint.valueOf("RED"));
 //        canvas.getChildren().add(bottomLine);
 
-        Scene mainScene = new Scene(canvas);
+        Scene mainScene = new Scene(overallPane);
         primaryStage.setScene(mainScene);
 
         mainScene.setOnKeyPressed(ke -> {
@@ -137,6 +159,7 @@ public class Pong extends Application {
             System.out.println("Left hit detected");
 
             // Score for right player ?
+            player2.scoreProperty().set(player2.scoreProperty().get()+1);
 
             ball.freeze();
             ball.reset();
@@ -149,6 +172,7 @@ public class Pong extends Application {
             System.out.println("Right hit detected");
 
             // Score for left player ?
+            player1.scoreProperty().set(player1.scoreProperty().get()+1);
 
             ball.freeze();
             ball.reset();
