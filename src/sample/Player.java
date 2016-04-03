@@ -28,6 +28,14 @@ public class Player implements Renderer {
             this.computeX = computeX;
         }
 
+        public void bounce(Ball ball) {
+            if (this == LEFT) {
+                ball.goRight();
+            } else if (this == RIGHT) {
+                ball.goLeft();
+            }
+        }
+
         public double x(Rectangle2D bounds) {
             return computeX.apply(bounds);
         }
@@ -35,24 +43,28 @@ public class Player implements Renderer {
 
     private Rectangle node;
     private Rectangle2D bounds;
+    private Ball ball;
+    private Position position;
 
     private double velocity = 0.0;
 
 
-    private Player(Position position, Rectangle2D bounds) {
+    private Player(Position position, Rectangle2D bounds, Ball ball) {
         node = new Rectangle(PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_COLOR);
         node.setX(position.x(bounds));
         node.setY(bounds.getHeight()/2-PLAYER_HEIGHT/2);
 
         this.bounds = bounds;
+        this.ball = ball;
+        this.position = position;
     }
 
-    public static Player left(Rectangle2D bounds) {
-        return new Player(Position.LEFT, bounds);
+    public static Player left(Rectangle2D bounds, Ball ball) {
+        return new Player(Position.LEFT, bounds, ball);
     }
 
-    public static Player right(Rectangle2D bounds) {
-        return new Player(Position.RIGHT, bounds);
+    public static Player right(Rectangle2D bounds, Ball ball) {
+        return new Player(Position.RIGHT, bounds, ball);
     }
 
     public void up() {
@@ -83,6 +95,11 @@ public class Player implements Renderer {
             node.setY(0);
         } else if (y+PLAYER_HEIGHT >= bounds.getHeight()) {
             node.setY(bounds.getHeight()-PLAYER_HEIGHT);
+        }
+
+        // With this approach we could 'bounce' multiple times before the ball has left the intersection :-(
+        if (node.getBoundsInParent().intersects(ball.getBounds())) {
+            position.bounce(ball);
         }
     }
 

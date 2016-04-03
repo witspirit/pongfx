@@ -1,22 +1,14 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import java.awt.*;
 
 public class Pong extends Application {
 
@@ -31,14 +23,15 @@ public class Pong extends Application {
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         System.out.println("Screen Width/Height: "+screenBounds.getWidth()+"/"+screenBounds.getHeight());
 
-        Player player1 = Player.left(screenBounds);
-        canvas.getChildren().add(player1.getNode());
-
-        Player player2 = Player.right(screenBounds);
-        canvas.getChildren().add(player2.getNode());
-
         Ball ball = Ball.create(screenBounds);
         canvas.getChildren().add(ball.getNode());
+
+        Player player1 = Player.left(screenBounds, ball);
+        canvas.getChildren().add(player1.getNode());
+
+        Player player2 = Player.right(screenBounds, ball);
+        canvas.getChildren().add(player2.getNode());
+
 
         Label speedLabel = new Label();
         speedLabel.setStyle("-fx-background-color: white");

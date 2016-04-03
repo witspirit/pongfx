@@ -1,8 +1,8 @@
 package sample;
 
-import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -68,28 +68,59 @@ public class Ball implements Renderer {
             // Bounce left
             System.out.println("Left hit detected");
 
-            xVelocity.set(-vX);
-
+            goRight();
         } else if (newX+RADIUS >= bounds.getMaxX()) {
             // Bounce right
             System.out.println("Right hit detected");
 
-            xVelocity.set(-vX);
+            goLeft();
         } else if (newY-RADIUS <= bounds.getMinY()) {
             // Bounce top
             System.out.println("Top hit detected");
 
-            yVelocity.set(-vY);
+            goDown();
 
         } else if (newY+RADIUS >= bounds.getMaxY()) {
             // Bounce bottom
             System.out.println("Bottom hit detected");
 
-            yVelocity.set(-vY);
+            goUp();
         }
 
         node.setCenterX(newX);
         node.setCenterY(newY);
+    }
+
+    public void goRight() {
+        double vX = xVelocity.doubleValue();
+        if (vX <= 0) {
+            xVelocity.set(-vX);
+        }
+    }
+
+    public void goLeft() {
+        double vX = xVelocity.doubleValue();
+        if (vX >= 0) {
+            xVelocity.set(-vX);
+        }
+    }
+
+    private void goUp() {
+        double vY = yVelocity.doubleValue();
+        if (vY >= 0) {
+            yVelocity.set(-vY);
+        }
+    }
+
+    private void goDown() {
+        double vY = yVelocity.doubleValue();
+        if (vY <= 0) {
+            yVelocity.set(-vY);
+        }
+    }
+
+    public Bounds getBounds() {
+        return node.getBoundsInParent();
     }
 
     public double getxVelocity() {
