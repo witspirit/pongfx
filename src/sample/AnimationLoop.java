@@ -13,9 +13,12 @@ public class AnimationLoop {
     private long lastUpdate = System.nanoTime();
     private AnimationTimer timer;
 
+    private Runnable evaluator;
     private List<Renderer> renderers = new ArrayList<>();
 
-    public AnimationLoop() {
+
+    public AnimationLoop(Runnable evaluator) {
+        this.evaluator = evaluator == null ? () -> {} : evaluator;
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -36,5 +39,6 @@ public class AnimationLoop {
 
     private void render(double elapsedSeconds) {
         renderers.forEach(c -> c.update(elapsedSeconds));
+        evaluator.run();
     }
 }
