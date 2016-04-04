@@ -5,15 +5,18 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.util.Random;
 
 public class Pong extends Application {
@@ -33,61 +36,13 @@ public class Pong extends Application {
 
         StackPane overallPane = new StackPane();
 
-        Pane canvas = new Pane();
-        canvas.setStyle("-fx-background-color: black;");
+        Pane canvas = buildGameArea();
         overallPane.getChildren().add(canvas);
 
-        screenBounds = Screen.getPrimary().getVisualBounds();
-        System.out.println("Screen Width/Height: "+ screenBounds.getWidth()+"/"+ screenBounds.getHeight());
-        Point2D screenCenter = new Point2D(screenBounds.getWidth() / 2, screenBounds.getHeight() / 2);
-
-        ball = new Ball(screenCenter);
-        canvas.getChildren().add(ball.getNode());
-
-        player1 = new Player(new Point2D(PLAYER_SCREEN_OFFSET, screenBounds.getHeight() / 2));
-        canvas.getChildren().add(player1.getNode());
-
-        player2 = new Player(new Point2D(screenBounds.getMaxX() - PLAYER_SCREEN_OFFSET, screenBounds.getHeight() / 2));
-        canvas.getChildren().add(player2.getNode());
-
-        HBox controlLayout = new HBox();
-        controlLayout.setPrefSize(screenBounds.getWidth(), 100);
-        overallPane.getChildren().add(controlLayout);
-
-
-        Label speedLabel = new Label();
-        speedLabel.setStyle("-fx-background-color: white");
-        // canvas.getChildren().add(speedLabel); // Let's not show it for now
-
-        // Feels a bit ridiculous... Can't I combine the two change listeners ?
-        ball.xVelocityProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                speedLabel.textProperty().setValue(newValue + "/" + ball.yVelocityProperty().doubleValue());
-            }
-        });
-        ball.yVelocityProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                speedLabel.textProperty().setValue(ball.xVelocityProperty().doubleValue() + "/" + newValue);
-            }
-        });
-
-        Label player1Score = new Label();
-        // player1Score.setStyle("-fx-background-color: white");
-        player1Score.textProperty().bind(Bindings.convert(player1.scoreProperty()));
-        controlLayout.getChildren().add(player1Score);
-
-        Label player2Score = new Label();
-        // player2Score.setStyle("-fx-background-color: white");
-        player2Score.textProperty().bind(Bindings.convert(player2.scoreProperty()));
-        controlLayout.getChildren().add(player2Score);
-
+        Pane controls = buildUiControls();
+        overallPane.getChildren().add(controls);
 
         Random random = new Random();
-
 
         // It turns out this is not really the bottom of the screen... Don't known why...
 //        Line bottomLine = new Line(0, screenBounds.getHeight(), screenBounds.getWidth(), screenBounds.getHeight());
@@ -151,6 +106,51 @@ public class Pong extends Application {
 
         primaryStage.show();
 
+    }
+
+    private Pane buildUiControls() {
+        BorderPane controlPane = new BorderPane();
+        Background background = new Background(new BackgroundFill(Color.CYAN, null, null));
+
+        GridPane scorePane = new GridPane();
+        scorePane.setPrefHeight(150);
+        scorePane.setHgap(400);
+        scorePane.setAlignment(Pos.CENTER);
+        controlPane.setTop(scorePane);
+
+        scorePane.add(scoreUi(player1), 0, 0);
+        scorePane.add(scoreUi(player2), 1, 0);
+
+        return controlPane;
+    }
+
+    private Pane scoreUi(Player player) {
+        BorderPane scoreArea = new BorderPane();
+        Label score = new Label();
+        score.setStyle("-fx-font-size: 30pt; -fx-text-fill : white");
+        score.textProperty().bind(Bindings.convert(player.scoreProperty()));
+        scoreArea.setCenter(score);
+        return scoreArea;
+    }
+
+
+    private Pane buildGameArea() {
+        Pane canvas = new Pane();
+        canvas.setStyle("-fx-background-color: black;");
+
+        screenBounds = Screen.getPrimary().getVisualBounds();
+        System.out.println("Screen Width/Height: "+ screenBounds.getWidth()+"/"+ screenBounds.getHeight());
+        Point2D screenCenter = new Point2D(screenBounds.getWidth() / 2, screenBounds.getHeight() / 2);
+
+        ball = new Ball(screenCenter);
+        canvas.getChildren().add(ball.getNode());
+
+        player1 = new Player(new Point2D(PLAYER_SCREEN_OFFSET, screenBounds.getHeight() / 2));
+        canvas.getChildren().add(player1.getNode());
+
+        player2 = new Player(new Point2D(screenBounds.getMaxX() - PLAYER_SCREEN_OFFSET, screenBounds.getHeight() / 2));
+        canvas.getChildren().add(player2.getNode());
+        return canvas;
     }
 
     private void evaluateGame() {
