@@ -15,7 +15,7 @@ import java.util.Random;
  */
 public class Ball implements Renderer {
 
-    private static final double SPEED = 600.0; // Pixels / Second
+    private static final double SPEED = 1000.0; // Pixels / Second
     private static final int RADIUS = 25;
 
     private Point2D startPosition;

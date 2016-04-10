@@ -2,22 +2,15 @@ package sample;
 
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import java.awt.*;
-import java.util.Random;
 
 public class Pong extends Application {
 
@@ -42,7 +35,7 @@ public class Pong extends Application {
         Pane controls = buildUiControls();
         overallPane.getChildren().add(controls);
 
-        Random random = new Random();
+        RandomSource random = new RandomSource();
 
         // It turns out this is not really the bottom of the screen... Don't known why...
 //        Line bottomLine = new Line(0, screenBounds.getHeight(), screenBounds.getWidth(), screenBounds.getHeight());
@@ -78,8 +71,7 @@ public class Pong extends Application {
                     ball.reset();
                     break;
                 case L: {
-                    double randomAngle = random.nextDouble() * (Math.PI * 2);
-                    ball.launch(randomAngle);
+                    ball.launch(random.angle());
                     break;
                 }
                 case F :
