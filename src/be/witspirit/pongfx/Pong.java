@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
@@ -45,50 +46,20 @@ public class Pong extends Application {
         Scene mainScene = new Scene(overallPane);
         primaryStage.setScene(mainScene);
 
-        mainScene.setOnKeyPressed(ke -> {
-            switch (ke.getCode()) {
-                case Q :
-                    System.out.println("Q pressed... Exiting");
-                    primaryStage.close();
-                    break;
-                case W :
-                    // System.out.println("W pressed... Moving P1 Up");
-                    player1.up();
-                    break;
-                case S :
-                    // System.out.println("S pressed... Moving P1 Down");
-                    player1.down();
-                    break;
-                case I :
-                    // System.out.println("I pressed... Moving P2 Up");
-                    player2.up();
-                    break;
-                case K :
-                    // System.out.println("K pressed... Moving P2 Down");
-                    player2.down();
-                    break;
-                case R :
-                    ball.reset();
-                    break;
-                case L: {
-                    ball.launch(random.angle());
-                    break;
-                }
-                case F :
-                    ball.freeze();
-                    break;
-            }
+        KeyMap keyMap = new KeyMap();
+        keyMap.register(KeyCode.Q, new PressAction(primaryStage::close));
 
-        });
+        keyMap.register(KeyCode.W, new PressAndReleaseAction(player1::up, player1::stopUp));
+        keyMap.register(KeyCode.S, new PressAndReleaseAction(player1::down, player1::stopDown));
 
-        mainScene.setOnKeyReleased(ke -> {
-            switch (ke.getCode()) {
-                case W : player1.stopUp(); break;
-                case S : player1.stopDown(); break;
-                case I : player2.stopUp(); break;
-                case K : player2.stopDown(); break;
-            }
-        });
+        keyMap.register(KeyCode.I, new PressAndReleaseAction(player2::up, player2::stopUp));
+        keyMap.register(KeyCode.K, new PressAndReleaseAction(player2::down, player2::stopDown));
+
+        keyMap.register(KeyCode.R, new PressAction(ball::reset));
+        keyMap.register(KeyCode.L, new PressAction(() -> ball.launch(random.angle())));
+        keyMap.register(KeyCode.F, new PressAction(ball::freeze));
+
+        keyMap.listenOn(mainScene);
 
         AnimationLoop animation = new AnimationLoop(this::evaluateGame);
         animation.register(ball);
