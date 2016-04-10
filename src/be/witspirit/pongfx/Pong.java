@@ -23,6 +23,9 @@ public class Pong extends Application {
     private Player player1;
     private Player player2;
 
+    private int targetScore = 5;
+    private Player lastScore = null;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setFullScreen(true);
@@ -56,8 +59,8 @@ public class Pong extends Application {
         keyMap.register(KeyCode.K, new PressAndReleaseAction(player2::down, player2::stopDown));
 
         keyMap.register(KeyCode.R, new PressAction(ball::reset));
-        keyMap.register(KeyCode.L, new PressAction(() -> ball.launch(random.angle())));
-        keyMap.register(KeyCode.F, new PressAction(ball::freeze));
+        keyMap.register(KeyCode.SPACE, new PressAction(() -> ball.launch(lastScore == null ? random.angle() : lastScore == player1 ? random.leftAngle() : random.rightAngle())));
+        keyMap.register(KeyCode.P, new PressAction(ball::freeze));
 
         keyMap.listenOn(mainScene);
 
@@ -73,7 +76,6 @@ public class Pong extends Application {
 
     private Pane buildUiControls() {
         BorderPane controlPane = new BorderPane();
-        Background background = new Background(new BackgroundFill(Color.CYAN, null, null));
 
         GridPane scorePane = new GridPane();
         scorePane.setPrefHeight(150);
@@ -121,28 +123,22 @@ public class Pong extends Application {
             // Bounce left
             System.out.println("Left hit detected");
 
-            // Score for right player ?
+            // Score for right player
             player2.scoreProperty().set(player2.scoreProperty().get()+1);
+            lastScore = player2;
 
-            ball.freeze();
-            ball.reset();
-            player1.reset();
-            player2.reset();
+            resetToStartPosition();
 
-            // ball.goRight();
         } else if (ball.getBounds().getMaxX() >= screenBounds.getMaxX()) {
             // Bounce right
             System.out.println("Right hit detected");
 
             // Score for left player ?
             player1.scoreProperty().set(player1.scoreProperty().get()+1);
+            lastScore = player1;
 
-            ball.freeze();
-            ball.reset();
-            player1.reset();
-            player2.reset();
+            resetToStartPosition();
 
-            // ball.goLeft();
         } else if (ball.getBounds().getMinY() <= screenBounds.getMinY()) {
             // Bounce top
             System.out.println("Top hit detected");
@@ -161,6 +157,31 @@ public class Pong extends Application {
 
         checkScreenBounds(player1);
         checkScreenBounds(player2);
+
+        // Did the last scorer reach a target score ?
+        if (lastScore != null) {
+            if (lastScore.scoreProperty().get() >= targetScore) {
+                // We have a winner !
+                System.out.println("Winner : " + (lastScore == player1 ? "Player 1" : "Player 2"));
+
+                // Show winner and afterwards we reset the game
+                resetGame();
+            }
+        }
+    }
+
+    private void resetGame() {
+        player1.scoreProperty().set(0);
+        player2.scoreProperty().set(0);
+        lastScore = null;
+        resetToStartPosition();
+    }
+
+    private void resetToStartPosition() {
+        ball.freeze();
+        ball.reset();
+        player1.reset();
+        player2.reset();
     }
 
     private void onBounce(Player player, Runnable action) {
