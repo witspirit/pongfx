@@ -1,4 +1,4 @@
-package sample;
+package be.witspirit.pongfx;
 
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;

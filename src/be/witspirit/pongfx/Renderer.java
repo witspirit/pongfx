@@ -1,4 +1,4 @@
-package sample;
+package be.witspirit.pongfx;
 
 /**
  * Interface to mark something as offering a render method

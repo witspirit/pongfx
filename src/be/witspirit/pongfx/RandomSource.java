@@ -1,4 +1,4 @@
-package sample;
+package be.witspirit.pongfx;
 
 import java.util.Random;
 

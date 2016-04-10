@@ -1,14 +1,11 @@
-package sample;
+package be.witspirit.pongfx;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-
-import java.util.function.Function;
 
 /**
  * Represents a Player

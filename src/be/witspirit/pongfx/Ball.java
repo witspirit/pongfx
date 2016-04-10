@@ -1,10 +1,9 @@
-package sample;
+package be.witspirit.pongfx;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 

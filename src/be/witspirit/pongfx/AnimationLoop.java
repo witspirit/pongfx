@@ -1,10 +1,9 @@
-package sample;
+package be.witspirit.pongfx;
 
 import javafx.animation.AnimationTimer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Tiny wrapper around the AnimationTimer
