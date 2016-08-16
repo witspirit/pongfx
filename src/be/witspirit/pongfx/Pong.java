@@ -1,5 +1,6 @@
 package be.witspirit.pongfx;
 
+import be.witspirit.pongfx.state.StateMachine;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Point2D;
@@ -39,12 +40,17 @@ public class Pong extends Application {
         Pane controls = buildUiControls();
         overallPane.getChildren().add(controls);
 
+        Pane feedback = buildFeedbackUi();
+        // overallPane.getChildren().add(feedback);
+
         RandomSource random = new RandomSource();
 
         // It turns out this is not really the bottom of the screen... Don't known why...
 //        Line bottomLine = new Line(0, screenBounds.getHeight(), screenBounds.getWidth(), screenBounds.getHeight());
 //        bottomLine.setStroke(Paint.valueOf("RED"));
 //        canvas.getChildren().add(bottomLine);
+
+        StateMachine stateMachine = new StateMachine(screenBounds, ball, player1, player2);
 
         Scene mainScene = new Scene(overallPane);
         primaryStage.setScene(mainScene);
@@ -59,12 +65,12 @@ public class Pong extends Application {
         keyMap.register(KeyCode.K, new PressAndReleaseAction(player2::down, player2::stopDown));
 
         keyMap.register(KeyCode.R, new PressAction(ball::reset));
-        keyMap.register(KeyCode.SPACE, new PressAction(() -> ball.launch(lastScore == null ? random.angle() : lastScore == player1 ? random.leftAngle() : random.rightAngle())));
+        keyMap.register(KeyCode.SPACE, new PressAction(stateMachine::launch));
         keyMap.register(KeyCode.P, new PressAction(ball::freeze));
 
         keyMap.listenOn(mainScene);
 
-        AnimationLoop animation = new AnimationLoop(this::evaluateGame);
+        AnimationLoop animation = new AnimationLoop(stateMachine::evaluateGame);
         animation.register(ball);
         animation.register(player1);
         animation.register(player2);
@@ -72,6 +78,36 @@ public class Pong extends Application {
 
         primaryStage.show();
 
+    }
+
+    private Pane buildFeedbackUi() {
+        GridPane grid = new GridPane();
+        RowConstraints rowConstraints = new RowConstraints();
+        grid.getRowConstraints().add(rowConstraints);
+        rowConstraints.setPercentHeight(100);
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setPercentWidth(50);
+        grid.getColumnConstraints().addAll(columnConstraints, columnConstraints);
+
+        VBox p1Feedback = new VBox();
+        p1Feedback.setAlignment(Pos.CENTER);
+
+        Label p1Label = new Label("Winner");
+        p1Label.setStyle("-fx-font-size: 30pt; -fx-text-fill : white");
+        p1Feedback.getChildren().add(p1Label);
+
+        grid.add(p1Feedback, 0, 0);
+
+        VBox p2Feedback = new VBox();
+        p2Feedback.setAlignment(Pos.CENTER);
+
+        Label p2Label = new Label("Loser");
+        p2Label.setStyle("-fx-font-size: 30pt; -fx-text-fill : white");
+        p2Feedback.getChildren().add(p2Label);
+
+        grid.add(p2Feedback, 1, 0);
+
+        return grid;
     }
 
     private Pane buildUiControls() {
@@ -110,92 +146,12 @@ public class Pong extends Application {
         ball = new Ball(screenCenter);
         canvas.getChildren().add(ball.getNode());
 
-        player1 = new Player(new Point2D(PLAYER_SCREEN_OFFSET, screenBounds.getHeight() / 2));
+        player1 = new Player(new Point2D(PLAYER_SCREEN_OFFSET, screenBounds.getHeight() / 2), screenBounds.getMinY(), screenBounds.getMaxY());
         canvas.getChildren().add(player1.getNode());
 
-        player2 = new Player(new Point2D(screenBounds.getMaxX() - PLAYER_SCREEN_OFFSET, screenBounds.getHeight() / 2));
+        player2 = new Player(new Point2D(screenBounds.getMaxX() - PLAYER_SCREEN_OFFSET, screenBounds.getHeight() / 2), screenBounds.getMinY(), screenBounds.getMaxY());
         canvas.getChildren().add(player2.getNode());
         return canvas;
-    }
-
-    private void evaluateGame() {
-        if (ball.getBounds().getMinX() <= screenBounds.getMinX()) {
-            // Bounce left
-            System.out.println("Left hit detected");
-
-            // Score for right player
-            player2.scoreProperty().set(player2.scoreProperty().get()+1);
-            lastScore = player2;
-
-            resetToStartPosition();
-
-        } else if (ball.getBounds().getMaxX() >= screenBounds.getMaxX()) {
-            // Bounce right
-            System.out.println("Right hit detected");
-
-            // Score for left player ?
-            player1.scoreProperty().set(player1.scoreProperty().get()+1);
-            lastScore = player1;
-
-            resetToStartPosition();
-
-        } else if (ball.getBounds().getMinY() <= screenBounds.getMinY()) {
-            // Bounce top
-            System.out.println("Top hit detected");
-
-            ball.goDown();
-
-        } else if (ball.getBounds().getMaxY() >= screenBounds.getMaxY()) {
-            // Bounce bottom
-            System.out.println("Bottom hit detected");
-
-            ball.goUp();
-        }
-
-        onBounce(player1, ball::goRight);
-        onBounce(player2, ball::goLeft);
-
-        checkScreenBounds(player1);
-        checkScreenBounds(player2);
-
-        // Did the last scorer reach a target score ?
-        if (lastScore != null) {
-            if (lastScore.scoreProperty().get() >= targetScore) {
-                // We have a winner !
-                System.out.println("Winner : " + (lastScore == player1 ? "Player 1" : "Player 2"));
-
-                // Show winner and afterwards we reset the game
-                resetGame();
-            }
-        }
-    }
-
-    private void resetGame() {
-        player1.scoreProperty().set(0);
-        player2.scoreProperty().set(0);
-        lastScore = null;
-        resetToStartPosition();
-    }
-
-    private void resetToStartPosition() {
-        ball.freeze();
-        ball.reset();
-        player1.reset();
-        player2.reset();
-    }
-
-    private void onBounce(Player player, Runnable action) {
-        if (player.getBounds().intersects(ball.getBounds())) {
-            action.run();
-        }
-    }
-
-    private void checkScreenBounds(Player player) {
-        if (player.getBounds().getMinY() <= screenBounds.getMinY()) {
-            player.setMinYPosition(screenBounds.getMinY());
-        } else if (player.getBounds().getMaxY() >= screenBounds.getMaxY()) {
-            player.setMaxYPosition(screenBounds.getMaxY());
-        }
     }
 
 

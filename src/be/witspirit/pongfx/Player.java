@@ -18,14 +18,19 @@ public class Player implements Renderer {
     private static final int SPEED = 20; // Pixels / Second
 
     private Point2D startPosition;
+    private double minPos;
+    private double maxPos;
     private Rectangle node;
 
     private double velocity = 0.0;
 
     private IntegerProperty score = new SimpleIntegerProperty(0);
 
-    public Player(Point2D startPosition) {
+    public Player(Point2D startPosition, double minPos, double maxPos) {
         this.startPosition = startPosition;
+        this.minPos = minPos;
+        this.maxPos = maxPos;
+
 
         node = new Rectangle(PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_COLOR);
         setCenterPosition(startPosition);
@@ -74,6 +79,13 @@ public class Player implements Renderer {
     public void update(double elapsedSeconds) {
         double newY = node.getY() + velocity;
         node.setY(newY);
+
+        // Clamping as necessary
+        if (getBounds().getMinY() <= minPos) {
+            setMinYPosition(minPos);
+        } else if (getBounds().getMaxY() >= maxPos) {
+            setMaxYPosition(maxPos);
+        }
     }
 
     public Bounds getBounds() {
