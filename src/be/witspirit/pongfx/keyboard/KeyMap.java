@@ -1,4 +1,4 @@
-package be.witspirit.pongfx;
+package be.witspirit.pongfx.keyboard;
 
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -13,17 +13,7 @@ import java.util.function.Consumer;
  * Allows to map keys to actions
  */
 public class KeyMap {
-    private final KeyAction NO_OP = new KeyAction() {
-        @Override
-        public void onPress() {
-            // NO-OP
-        }
-
-        @Override
-        public void onRelease() {
-            // NO-OP
-        }
-    };
+    private final KeyAction NO_OP = new NoOpKeyAction();
 
     private final Map<KeyCode, KeyAction> actions = new HashMap<>();
 
@@ -42,4 +32,5 @@ public class KeyMap {
     private EventHandler<KeyEvent> handle(Consumer<KeyAction> actionInvoker) {
         return ke -> actionInvoker.accept(actions.getOrDefault(ke.getCode(), NO_OP));
     }
+
 }

@@ -1,5 +1,8 @@
 package be.witspirit.pongfx;
 
+import be.witspirit.pongfx.keyboard.DynamicAction;
+import be.witspirit.pongfx.keyboard.KeyMap;
+import be.witspirit.pongfx.keyboard.PressAction;
 import be.witspirit.pongfx.state.StateMachine;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
@@ -9,8 +12,10 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -55,15 +60,16 @@ public class Pong extends Application {
         KeyMap keyMap = new KeyMap();
         keyMap.register(KeyCode.Q, new PressAction(primaryStage::close));
 
-        keyMap.register(KeyCode.W, new PressAndReleaseAction(player1::up, player1::stopUp));
-        keyMap.register(KeyCode.S, new PressAndReleaseAction(player1::down, player1::stopDown));
+        keyMap.register(KeyCode.W, new DynamicAction(stateMachine::getP1MoveUpAction));
+        keyMap.register(KeyCode.S, new DynamicAction(stateMachine::getP1MoveDownAction));
 
-        keyMap.register(KeyCode.I, new PressAndReleaseAction(player2::up, player2::stopUp));
-        keyMap.register(KeyCode.K, new PressAndReleaseAction(player2::down, player2::stopDown));
+        keyMap.register(KeyCode.I, new DynamicAction(stateMachine::getP2MoveUpAction));
+        keyMap.register(KeyCode.K, new DynamicAction(stateMachine::getP2MoveDownAction));
 
-        keyMap.register(KeyCode.R, new PressAction(ball::reset));
-        keyMap.register(KeyCode.SPACE, new PressAction(stateMachine::launch));
-        keyMap.register(KeyCode.P, new PressAction(ball::freeze));
+        keyMap.register(KeyCode.SPACE, new DynamicAction(stateMachine::getLaunchAction));
+        // Special manipulation actions
+        keyMap.register(KeyCode.R, new DynamicAction(stateMachine::getBallResetAction));
+        keyMap.register(KeyCode.P, new DynamicAction(stateMachine::getBallFreezeAction));
 
         keyMap.listenOn(mainScene);
 
@@ -75,36 +81,6 @@ public class Pong extends Application {
 
         primaryStage.show();
 
-    }
-
-    private Pane buildFeedbackUi() {
-        GridPane grid = new GridPane();
-        RowConstraints rowConstraints = new RowConstraints();
-        grid.getRowConstraints().add(rowConstraints);
-        rowConstraints.setPercentHeight(100);
-        ColumnConstraints columnConstraints = new ColumnConstraints();
-        columnConstraints.setPercentWidth(50);
-        grid.getColumnConstraints().addAll(columnConstraints, columnConstraints);
-
-        VBox p1Feedback = new VBox();
-        p1Feedback.setAlignment(Pos.CENTER);
-
-        Label p1Label = new Label("");
-        p1Label.setStyle("-fx-font-size: 30pt; -fx-text-fill : white");
-        p1Feedback.getChildren().add(p1Label);
-
-        grid.add(p1Feedback, 0, 0);
-
-        VBox p2Feedback = new VBox();
-        p2Feedback.setAlignment(Pos.CENTER);
-
-        Label p2Label = new Label("");
-        p2Label.setStyle("-fx-font-size: 30pt; -fx-text-fill : white");
-        p2Feedback.getChildren().add(p2Label);
-
-        grid.add(p2Feedback, 1, 0);
-
-        return grid;
     }
 
     private Pane buildUiControls() {

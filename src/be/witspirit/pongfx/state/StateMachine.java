@@ -2,6 +2,10 @@ package be.witspirit.pongfx.state;
 
 import be.witspirit.pongfx.Ball;
 import be.witspirit.pongfx.Player;
+import be.witspirit.pongfx.keyboard.KeyAction;
+import be.witspirit.pongfx.keyboard.NoOpKeyAction;
+import be.witspirit.pongfx.keyboard.PressAction;
+import be.witspirit.pongfx.keyboard.PressAndReleaseAction;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Rectangle2D;
 
@@ -17,6 +21,16 @@ public class StateMachine {
     private final Player player2;
     private final StringProperty p1Feedback;
     private final StringProperty p2Feedback;
+
+    private KeyAction launchAction = NoOpKeyAction.INSTANCE;
+    private KeyAction p1MoveUpAction = NoOpKeyAction.INSTANCE;
+    private KeyAction p1MoveDownAction = NoOpKeyAction.INSTANCE;
+    private KeyAction p2MoveUpAction = NoOpKeyAction.INSTANCE;
+    private KeyAction p2MoveDownAction = NoOpKeyAction.INSTANCE;
+
+    // Special operations that perhaps should not be allowed, but offer a troubleshooting functionality
+    private KeyAction ballResetAction = NoOpKeyAction.INSTANCE;
+    private KeyAction ballFreezeAction = NoOpKeyAction.INSTANCE;
 
     private GameState currentState;
 
@@ -71,5 +85,68 @@ public class StateMachine {
 
     public StringProperty p2FeedbackProperty() {
         return p2Feedback;
+    }
+
+    public KeyAction getLaunchAction() {
+        return launchAction;
+    }
+
+    public StateMachine setLaunchAction(KeyAction launchAction) {
+        this.launchAction = launchAction;
+        return this;
+    }
+
+    public KeyAction getP1MoveUpAction() {
+        return p1MoveUpAction;
+    }
+
+    public StateMachine setP1MoveUpAction(KeyAction p1MoveUpAction) {
+        this.p1MoveUpAction = p1MoveUpAction;
+        return this;
+    }
+
+    public KeyAction getP1MoveDownAction() {
+        return p1MoveDownAction;
+    }
+
+    public StateMachine setP1MoveDownAction(KeyAction p1MoveDownAction) {
+        this.p1MoveDownAction = p1MoveDownAction;
+        return this;
+    }
+
+    public KeyAction getP2MoveUpAction() {
+        return p2MoveUpAction;
+    }
+
+    public StateMachine setP2MoveUpAction(KeyAction p2MoveUpAction) {
+        this.p2MoveUpAction = p2MoveUpAction;
+        return this;
+    }
+
+    public KeyAction getP2MoveDownAction() {
+        return p2MoveDownAction;
+    }
+
+    public StateMachine setP2MoveDownAction(KeyAction p2MoveDownAction) {
+        this.p2MoveDownAction = p2MoveDownAction;
+        return this;
+    }
+
+    public KeyAction getBallResetAction() {
+        return ballResetAction;
+    }
+
+    public StateMachine setBallResetAction(KeyAction ballResetAction) {
+        this.ballResetAction = ballResetAction;
+        return this;
+    }
+
+    public KeyAction getBallFreezeAction() {
+        return ballFreezeAction;
+    }
+
+    public StateMachine setBallFreezeAction(KeyAction ballFreezeAction) {
+        this.ballFreezeAction = ballFreezeAction;
+        return this;
     }
 }

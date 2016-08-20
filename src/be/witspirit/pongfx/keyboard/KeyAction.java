@@ -1,4 +1,4 @@
-package be.witspirit.pongfx;
+package be.witspirit.pongfx.keyboard;
 
 /**
  * Simple interface to encapsulate an action for a certain key

@@ -1,4 +1,6 @@
-package be.witspirit.pongfx;
+package be.witspirit.pongfx.keyboard;
+
+import be.witspirit.pongfx.keyboard.KeyAction;
 
 /**
  * Simple action with a function for press and a function for release
