@@ -7,8 +7,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
-import java.util.Random;
-
 /**
  * Representation of the Pong Ball
  */

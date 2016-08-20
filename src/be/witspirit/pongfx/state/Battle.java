@@ -1,8 +1,6 @@
 package be.witspirit.pongfx.state;
 
-import be.witspirit.pongfx.Ball;
 import be.witspirit.pongfx.Player;
-import javafx.geometry.Rectangle2D;
 
 
 /**

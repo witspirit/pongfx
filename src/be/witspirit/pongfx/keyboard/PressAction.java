@@ -1,7 +1,5 @@
 package be.witspirit.pongfx.keyboard;
 
-import be.witspirit.pongfx.keyboard.KeyAction;
-
 /**
  * Only does something on Press
  */

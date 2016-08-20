@@ -4,8 +4,6 @@ import be.witspirit.pongfx.Ball;
 import be.witspirit.pongfx.Player;
 import be.witspirit.pongfx.keyboard.KeyAction;
 import be.witspirit.pongfx.keyboard.NoOpKeyAction;
-import be.witspirit.pongfx.keyboard.PressAction;
-import be.witspirit.pongfx.keyboard.PressAndReleaseAction;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Rectangle2D;
 

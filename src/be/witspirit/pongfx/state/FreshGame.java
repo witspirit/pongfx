@@ -2,7 +2,6 @@ package be.witspirit.pongfx.state;
 
 import be.witspirit.pongfx.keyboard.PressAction;
 import be.witspirit.pongfx.keyboard.PressAndReleaseAction;
-import javafx.scene.input.KeyCode;
 
 /**
  * A fresh game. All players have 0 score and the ball isn't yet moving.
