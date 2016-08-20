@@ -18,6 +18,7 @@ public class BattleWin extends GameState {
     @Override
     public void stateEntry() {
         winningPlayer.scoreProperty().set(winningPlayer.scoreProperty().get()+1);
+        resetToStartPosition();
 
         if (winningPlayer.scoreProperty().get() >= targetScore) {
             stateMachine.newState(new GameWin(winningPlayer));
@@ -26,7 +27,6 @@ public class BattleWin extends GameState {
 
     @Override
     public void launch() {
-        resetToStartPosition();
         ball.launch(winningPlayer == player1 ? random.leftAngle() : random.rightAngle());
         stateMachine.newState(new Battle());
     }

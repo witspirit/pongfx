@@ -24,8 +24,7 @@ public class Pong extends Application {
     private Player player1;
     private Player player2;
 
-    private int targetScore = 5;
-    private Player lastScore = null;
+    private FeedbackUi feedbackUi;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -40,17 +39,15 @@ public class Pong extends Application {
         Pane controls = buildUiControls();
         overallPane.getChildren().add(controls);
 
-        Pane feedback = buildFeedbackUi();
-        // overallPane.getChildren().add(feedback);
-
-        RandomSource random = new RandomSource();
+        feedbackUi = new FeedbackUi();
+        feedbackUi.addToContainer(overallPane);
 
         // It turns out this is not really the bottom of the screen... Don't known why...
 //        Line bottomLine = new Line(0, screenBounds.getHeight(), screenBounds.getWidth(), screenBounds.getHeight());
 //        bottomLine.setStroke(Paint.valueOf("RED"));
 //        canvas.getChildren().add(bottomLine);
 
-        StateMachine stateMachine = new StateMachine(screenBounds, ball, player1, player2);
+        StateMachine stateMachine = new StateMachine(screenBounds, ball, player1, player2, feedbackUi.p1FeedbackProperty(), feedbackUi.p2FeedbackProperty());
 
         Scene mainScene = new Scene(overallPane);
         primaryStage.setScene(mainScene);
@@ -92,7 +89,7 @@ public class Pong extends Application {
         VBox p1Feedback = new VBox();
         p1Feedback.setAlignment(Pos.CENTER);
 
-        Label p1Label = new Label("Winner");
+        Label p1Label = new Label("");
         p1Label.setStyle("-fx-font-size: 30pt; -fx-text-fill : white");
         p1Feedback.getChildren().add(p1Label);
 
@@ -101,7 +98,7 @@ public class Pong extends Application {
         VBox p2Feedback = new VBox();
         p2Feedback.setAlignment(Pos.CENTER);
 
-        Label p2Label = new Label("Loser");
+        Label p2Label = new Label("");
         p2Label.setStyle("-fx-font-size: 30pt; -fx-text-fill : white");
         p2Feedback.getChildren().add(p2Label);
 
