@@ -14,7 +14,14 @@ public class RandomSource {
     }
 
     public double rightAngle() {
-        return (random.nextDouble()-0.5) * (Math.PI/2);
+        double baseAngle = random.nextDouble() - 0.5; // -0.5 to ensure we have between -45 and +45
+        // This part is to ensure that we don't have too flat a ball launch as it leads to a boring game
+        if (baseAngle < 0) {
+            baseAngle = baseAngle - 0.1;
+        } else {
+            baseAngle = baseAngle + 0.1;
+        }
+        return baseAngle * (Math.PI/2);
     }
 
     public double angle() {

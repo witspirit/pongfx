@@ -14,13 +14,12 @@ import java.util.Random;
  */
 public class Ball implements Renderer {
 
-    private static final double SPEED = 1000.0; // Pixels / Second
+    private static final double SPEED = 1500.0; // Pixels / Second
     private static final int RADIUS = 25;
 
     private Point2D startPosition;
 
     private Circle node;
-    private Random random;
 
     private DoubleProperty xVelocity = new SimpleDoubleProperty(0.0);
     private DoubleProperty yVelocity = new SimpleDoubleProperty(0.0);
